@@ -1,0 +1,46 @@
+# Environment variables (contains API keys)
+.env
+.env.local
+.env.*.local
+
+# Claude Code config (local only)
+CLAUDE.md
+.claude/
+PROTOCOL_DEVELOPMENT_GUIDE.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Cache files
+.code_validation_cache.json
+*.cache
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Output files (regenerate as needed)
+*.zip
+NHSNACHMonthly1-v0.0.000-FHIR-TestCases/
+

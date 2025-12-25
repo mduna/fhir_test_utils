@@ -1,0 +1,1174 @@
+National Healthcare Safety Network Patient-level Antimicrobial Use and Resistance (Patient-level AUR) Surveillance Module Protocol ― Data Collection and Proposed Measures
+Antimicrobial Use Option
+Introduction
+(to be written)
+Settings and Patient Locations
+All facilities enrolled in the National Healthcare Safety Network (NHSN) Patient Safety Component are eligible to report to this module. This includes facilities enrolled as general hospitals, critical access hospitals, children’s hospitals, long term acute care hospitals, pediatric long term acute care hospitals, military and veterans’ hospitals, oncology hospitals, orthopedic hospitals, psychiatric hospitals, rehabilitation hospitals, surgical hospitals, women’s hospitals, women’s and children’s hospitals, government and non-government hospitals for public health emergencies. AU data will be collected from applicable inpatient locations (including CMS-certified units with a separate CMS Certification Number [CCN]) and three eligible outpatient locations (emergency department, pediatric emergency department and 24-hour observation area). The Patient-level AUR Module does not accept data from other outpatient locations such as outpatient clinics.
+NHSN delineates a CDC-defined designation (CDC Location) for patient care areas/locations where patients have similar disease conditions or are receiving care for similar medical or surgical specialties. Each facility location is “mapped” to one CDC Location within the NHSN facility. The specific CDC Location code is determined by the type of patients cared for in that area according to the NHSN location mapping algorithm for acuity level and service type. The patient care areas include adult, pediatric, and neonatal units as defined by NHSN Codes. See the NHSN Locations chapter for more information regarding location mapping. Note: use the same patient care locations throughout NHSN for both AUR and HAI reporting. Facilities should not map separate locations only for AUR reporting.
+Reporting Requirements
+All facilities using the NHSN Patient-level AU Module must have the ability to collect the numerator and denominator data electronically, using specifications in the Antimicrobial Use Implementation Guide. To participate in this module, facility personnel responsible for reporting data to NHSN must coordinate with their laboratory and pharmacy information software providers (if participating in optional complimentary metrics) to configure their systems to enable the generation of standard formatted file(s) to be submitted to NHSN. Manual data entry is not available for this module. Measures will only be calculated for submissions meeting the above minimum data requirements.
+
+An acceptable month of data includes:
+All information required for facility enrollment into NHSN on file, including mapping of facility locations according to the CDC Locations and Descriptions manual
+A completed NHSN Patient Safety Component Annual Hospital Survey on file for each reporting year
+Files containing all data fields outlined in the Table of Instructions (Appendix D) 
+Digital Measure Reporting Plan, which is a list of facility locations a facility expects to be included in the monthly report as well as data permissions/consent
+Daily patient location report  (Appendix E)
+Monthly Change file (Appendix F)
+Antimicrobial Administration: We highly recommend using the facility’s antimicrobial administration data documented in the eMAR and/or BCMA, as opposed to usage derived from other data sources (for example, pharmacy orders, doses dispensed, doses billed). If medication administration data in eMAR or BCMA are not available via FHIR API, medication order/request can serve as a proxy for calculating Antimicrobial Days.  It is important to note that literature demonstrated discrepancy between medication administration and order. Facilities that use medication order instead of administration data can receive rate of antimicrobial use, however, their data will be excluded from SAAR baseline and will not be used to generate SAARs. [Cite discrepancy paper]  
+
+High level data elements (AU)
+Facility 
+Facility ID: OrgID?  
+
+Antimicrobials Administration 
+Medication 
+Route of Administration
+Date and time of medication administered 
+Dose of medication administered 
+Antimicrobial Orders
+Antimicrobials Ordered [based on medication orders, filtered for antimicrobials]
+Ordered Route of Administration 
+Ordered Start Date
+Ordered End Date
+Ordered Dose
+Dose unit?
+Ordered Medication Frequencies, e.g., Q8H, QD, QOD, etc.
+
+
+Patient 
+Patient ID
+Patient care location: for all patients on each day of stay in any inpatient locations, ER, pediatric ER, or 24-hour observation units, the following will be derived from 
+Date of admission 
+Date of discharge
+Date and time of patient transfer from a location to another within the facility
+Date of Encounter (ED, pediatric ED, and 24-hour observation units) –note. If available, collect timestamp of triage. 
+Patient care location type (CDC location type): the location type mapped for each patient care location, for example, intensive care units, general medical wards, stepdown units, hematology wards, oncology wards, etc. 
+Demographics (at admission or encounter)
+Date of Birth (DOB)
+Sex at birth
+Race
+Ethnicity
+Sexual orientation
+Gender identity
+Insurance coverage
+Patient address
+Marital status
+Primary language (can be many)
+Languages spoken (can be many)
+Birthweight of patients in neonatal locations
+Gestational age of patients in neonatal locations
+Inborn or outborn for patients in neonatal locations Note. Available data elements in FHIR? 
+Final Diagnoses (ICD-10?, timiliness?)
+Diagnoses at admission (SNOMED?)
+Procedure codes –note. CPT?
+
+The following factors will be evaluated for risk adjustment in the form of days present of patients with the following conditions:
+
+
+Definitions 
+Table 1. Data Elements for Antimicrobial Days 
+
+Antimicrobial Days (also known as Days of Therapy): Defined as the aggregate sum of days for which any amount of a specific antimicrobial agent was administered to individual patients as documented in the eMAR and/or BCMA.8-11 Appendix B provides the full list of antimicrobial agents collected in the NHSN AU Option. Aggregate antimicrobial days are reported monthly for inpatient locations, FacWideIN, and three select outpatient acute care settings (specifically, outpatient ED, pediatric ED, and 24-hour observation area) for select antimicrobial agents and stratified by route of administration (specifically, intravenous, intramuscular, digestive, and respiratory). 
+
+Inpatient admission: A patient is counted as an admission when they arrive in an NHSN designated inpatient location regardless of patient status (for example, inpatient, observation).
+
+ED/Obs encounter: Enter the total number of patient visits to the given outpatient location (specifically: ED, Pediatric ED, 24-hour Observation Area). A visit to an eligible outpatient location counts as a single encounter. 
+If the patient’s stay in any eligible outpatient location continues into subsequent calendar days, that patient should still be counted as 1 encounter. For example:
+If the patient arrives in the ED on Monday and remains in the ED until Wednesday, that patient should be counted as 1 encounter within the ED.
+If the patient transfers from one outpatient location to another within the same facility, that patient should be counted as 1 encounter for the first outpatient location and should not be counted as an encounter for the receiving location (specifically, a patient should not contribute two encounters when transferring between outpatient locations in the same facility). For example:
+If the patient arrives in the ED on Monday then is transferred to the 24hr Observation Area on Tuesday, the patient should be counted only as 1 encounter within the ED and zero encounters within the 24hr Observation Area. 
+If the patient is discharged, or leaves, then returns to that outpatient unit, that patient should be counted as 2 encounters, even when the movements were during the same calendar day. For example:
+If the patient arrives in the ED at 07:00 on Monday, is discharged at 11:00 on Monday then returns to the ED at 18:00 on Monday, that patient counts as two separate encounters for the ED.
+If the patient transfers from outpatient to inpatient, then to outpatient, the second outpatient stay (assuming it’s in an eligible location) would be considered a new encounter because there was time spent in an inpatient location. For example:
+If the patient arrives in the ED on Monday, is admitted or transferred to the medical ICU on Monday then is transferred to the 24hr Observation Unit on Tuesday and admitted or transferred back to the medical ward on Tuesday, the patient would contribute 2 encounters (the first in the ED and the second to the 24hr Observation Unit) since there was time spent in an inpatient location (medical ward) in between the outpatient stays.
+If the patient’s stay in the facility crosses calendar months, the patient will contribute an encounter to the first month the patient was in an outpatient location. For example:
+If patient is in outpatient location on January 31 and February 1 then count as 1 encounter to January and zero to February.
+
+Finalized encounter or admission: Discharged patients with finalized, complete medical billing coding. 
+
+AU: Antimicrobial Use
+Measures
+Table 2. Location-specific and Facility-wide Inpatient Metrics
+
+
+Standardized Antimicrobial Administration Ratio (SAAR):
+We plan to develop the Standardized Antimicrobial Administration Ratio (SAAR) as a metric for CDC and individual facilities to analyze and report antimicrobial use data in summary form. The SAAR is calculated by dividing observed antimicrobial use by predicted antimicrobial use. 
+ 
+
+
+We aim to generate SAARs for 22 antimicrobial agent categories (7 adult, 8 pediatric, and 7 neonatal) and 17 specific NHSN location types (8 adult, 5 pediatric, and 4 neonatal), for a total of 47 possible SAARs (see Appendix D), each of which can serve as a high-value target or high-level indicator for antimicrobial stewardship programs. The antimicrobial agent categories were determined by CDC with input from external adult, pediatric, and neonatal infectious disease physicians and pharmacists. The SAAR agent categories are listed below. The specific antimicrobial agents in each category can be found in Appendix E.
+Adult SAAR antimicrobial agent categories
+All antibacterial agents
+Broad spectrum antibacterial agents predominantly used for hospital-onset infections
+Broad spectrum antibacterial agents predominantly used for community-acquired infections
+Antibacterial agents predominantly used for resistant Gram-positive infections (e.g., MRSA)
+Narrow spectrum beta-lactam agents
+Antibacterial agents posing the highest risk for CDI (not mutually exclusive, agents may overlap with other categories)
+Antifungal agents predominantly used for invasive candidiasis
+ 
+Pediatric SAAR antimicrobial agent categories
+All antibacterial agents
+Broad spectrum antibacterial agents predominantly used for hospital-onset infections
+Broad spectrum antibacterial agents predominantly used for community-acquired infections
+Antibacterial agents predominantly used for resistant Gram-positive infections (e.g., MRSA)
+Narrow spectrum beta-lactam agents
+Azithromycin
+Antibacterial agents posing the highest risk for CDI (not mutually exclusive, agents may overlap with other categories)
+Antifungal agents predominantly used for invasive candidiasis
+ 
+Neonatal SAAR antimicrobial agent categories
+All neonatal antibacterial agents
+Vancomycin predominantly used for treatment of late-onset sepsis
+Broad spectrum antibacterial agents predominantly used for hospital-onset infections
+Third generation Cephalosporins
+Ampicillin predominantly used for treatment of early-onset sepsis
+Aminoglycosides predominantly used for treatment of early-onset and late-onset sepsis
+Fluconazole predominantly used for candidiasis
+ 
+Table 3. Location types for generating SAARs
+ 
+Antimicrobial use... (The rationale to incorporate patient-level information for risk adjustment)
+
+A SAAR referent population, which NHSN will use to develop SAAR predictive models, will be AU data aggregated from select patient care locations reporting to the AU Option for a particular year, specifically the baseline year. NHSN will assess reporting volume for each location type to ensure sample size is large enough for inclusion in SAAR models. Associations between AU rates and risk factors identified in the referent population will be later applied to the larger universe of SAAR-eligible locations and if these associations were based on a small number of records, determine whether they are representative of all NHSN locations and facilities. The greater the sample size NHSN includes in SAAR predictive models, the more precise the SAAR estimates, or adjustments. SAAR referent populations will include location types that are important to hospital antimicrobial stewardship, have adequate reporting volume during the baseline year, and report for at least nine months of the baseline year.
+
+After defining referent populations and SAAR agent categories, NHSN will identify candidate locations, facility-level factors, and patient demographics, diagnoses, comorbidities, and procedures to consider as risk-adjustments in SAAR predictive models. Facility-level data are collected through the NHSN Patient Safety Component Annual Hospital Survey.
+
+A high SAAR that achieves statistical significance (specifically, a SAAR value statistically significantly larger than 1.0) may indicate antimicrobial over-use. A SAAR that is not statistically different from 1.0 indicates antimicrobial use is equivalent to the referent population’s antimicrobial use. A low SAAR that achieves statistical significance may indicate antimicrobial under-use. 
+ 
+Measure Logic
+
+AU within the Patient-level AU Module are defined as follows. 
+
+Initial Patient Population: 
+All encounters for patients of any age in an ED, pediatric ED, 24-hr observation, or inpatient location or all encounters for patients of any age with an ED, observation, inpatient, or short stay status during the measurement period. Measures can be calculated at location level or facility-wide (FacWideIN). 
+
+Antimicrobials under surveillance:
+Includes antibacterials, antifungals, anti-influenza, anti-COVID agents, and an RSV monoclonal antibody. Appendix B provides the full list of antimicrobial agents under the scope of AU surveillance.
+
+Routes of administration under surveillance:
+Any antimicrobial administered via intravenous, intramuscular, digestive, and respiratory routes is eligible.
+Table 4. Classification and Definition of Routes of Administration for Antimicrobial Days
+a Other routes of administration are excluded from data analysis (for example, antibiotic locks, intraperitoneal, intrapleural, intraventricular, irrigation, topical) and should not be included in the total antimicrobial days nor the sub-stratification of the routes of administration.  
+b Definitions were drawn from SNOMED qualifier value hierarchy. Refer to the CDA Antimicrobial Use (AU) Toolkit for specific codes corresponding to each route of administration.
+c For example, rectal administration of Vancomycin. 
+
+Example 1. Example eMAR and Calculation of Antimicrobial Days
+This example illustrates the antimicrobial days calculation for a patient receiving 1 gram Meropenem intravenously every 8 hours and 1000mg Amikacin intravenously every 24 hours in the medical ward. Table 1 provides an example of administered doses for this patient documented in eMAR. Table 2 illustrates the calculation of Meropenem and Amikacin days by antimicrobial (total) and stratified by route of administration based on the administered doses of Meropenem and Amikacin documented in eMAR. Table 3 illustrates the contribution of this patient’s antimicrobial days to the aggregate monthly report per patient care location.
+ 
+Table 1. Example eMAR for patient housed in Medical Ward
+ 
+Table 2. Example of calculation of antimicrobial days 
+a Please note, despite receiving three administrations of Meropenem on December 29, the patient only contributed one total Meropenem antimicrobial day per calendar day.
+ 
+Table 3. Example of antimicrobial days per month per patient care location 
+
+
+Example 2. Differences in Calculations for Patient Care Location and Facility-Wide Inpatient for a Patient Transferred Between Patient Care Locations
+ 
+This example illustrates the antimicrobial days calculation for a patient receiving 1 gram Vancomycin every 8 hours that was transferred from the MICU to a medical ward on December 1. Table 1 provides an example of doses documented in eMAR administered to this patient in the MICU and Medical Ward. Table 2 illustrates the calculation of Vancomycin days by antimicrobial (total) and stratified by route of administration based on the administered doses of Vancomycin documented in eMAR. One Vancomycin day is attributed to both the MICU and Medical Ward locations since administrations took place in both units during the calendar day. Further, despite receiving two administrations of Vancomycin in the Medical Ward, the patient only attributes one total Vancomycin antimicrobial day for the Medical Ward per calendar day. Table 3 shows the contribution of this patient’s Vancomycin days to the aggregate monthly report per location and facility-wide inpatient. Note that while the patient attributes one total Vancomycin day for both the MICU and the Medical Ward on December 1, only one total Vancomycin day can be attributed to the FacWideIN count that calendar day.
+ 
+Table 1. Example eMAR for patient transferred from MICU to Medical Ward on December 1
+ 
+Table 2. Example of calculation of antimicrobial days for December 1
+ 
+Table 3. Example of antimicrobial days per month per patient care location and facility-wide inpatient contributed from December 1
+
+
+Example 3. Calculation of Antimicrobial Days for a Patient Care Location when a Patient Admission extends over Two Different Months
+ 
+This example illustrates the antimicrobial days calculation for a patient receiving 1 gram Ceftriaxone intravenously every 24 hours for two days in the Surgical Ward (but spanning different months). Table 1 provides an example of administered doses for this patient documented in eMAR. Table 2 illustrates the calculation of Ceftriaxone days by antimicrobial (total) and stratification of route of administration based upon the administered doses of Ceftriaxone documented in eMAR. Table 3 illustrates the contribution of this patient’s Ceftriaxone days to the aggregate monthly report per patient care location.
+ 
+Note: The patient’s FacWideIN admission (denominator) would be attributed to the month the patient was first physically located in an inpatient location within the facility. In the scenario highlighted here, the patient would attribute 1 admission to December and no admission to January (specifically, the patient would not be counted in the total January admissions count). The patient would continue to contribute one day present for each day the patient was in the location/facility.
+ 
+Table 1. Example eMAR for patient housed in Surgical Ward
+ 
+Table 2. Example of calculation of antimicrobial days 
+ 
+Table 3. Example of antimicrobial days per month per patient care location 
+
+
+
+Calculating antimicrobial days using medication orders as proxy for antimicrobial administrations: 
+
+
+
+Example, patient in hospital from Jan 1 to Jan 5. Patient had an order for drug to start on Jan 1, then attribute 1 antimicrobial day to each location the patient was in during the hospital stay. Based on ward routines, drugs are scheduled to be administered during different time schedules (cannot accommodate all settings). We will assume that when the drug is ordered, it is administered. For this reason, we highly recommend submitting antimicrobial administration data since we understand there could be a discrepancy between when the order starts and when the patient actually receives the medication. 
+
+Antimicrobial Days (also known as Days of Therapy): Defined as the aggregate sum of days for which any amount of a specific antimicrobial agent was administered to individual patients as documented in the eMAR and/or BCMA.
+
+
+AU Denominators:
+The days present and/or admissions for the time period under surveillance. Days present are defined as the time period during which a given patient is at risk for antimicrobial exposure in a given patient location.
+
+Admissions are defined as the aggregate number of patients admitted to an inpatient location within the facility (facility-wide inpatient) starting on first day of each calendar month through the last day of the calendar month. A patient is counted as an admission when they arrive in an NHSN designated inpatient location regardless of patient status (for example, inpatient, observation). Further, a patient admitted to an inpatient unit would be counted as an admission even if they were discharged that same calendar day. 
+
+Encounters: Enter the total number of patient visits to the given outpatient location (specifically: ED, Pediatric ED, 24-hour Observation Area). A visit to an eligible outpatient location counts as a single encounter. 
+If the patient’s stay in any eligible outpatient location continues into subsequent calendar days, that patient should still be counted as 1 encounter. For example:
+If the patient arrives in the ED on Monday and remains in the ED until Wednesday, that patient should be counted as 1 encounter within the ED.
+If the patient transfers from one outpatient location to another within the same facility, that patient should be counted as 1 encounter for the first outpatient location and should not be counted as an encounter for the receiving location (specifically, a patient should not contribute two encounters when transferring between outpatient locations in the same facility). For example:
+If the patient arrives in the ED on Monday then is transferred to the 24hr Observation Area on Tuesday, the patient should be counted only as 1 encounter within the ED and zero encounters within the 24hr Observation Area. 
+If the patient is discharged, or leaves, then returns to that outpatient unit, that patient should be counted as 2 encounters, even when the movements were during the same calendar day. For example:
+If the patient arrives in the ED at 07:00 on Monday, is discharged at 11:00 on Monday then returns to the ED at 18:00 on Monday, that patient counts as two separate encounters for the ED.
+If the patient transfers from outpatient to inpatient, then to outpatient, the second outpatient stay (assuming it’s in an eligible location) would be considered a new encounter because there was time spent in an inpatient location. For example:
+If the patient arrives in the ED on Monday, is admitted or transferred to the medical ICU on Monday then is transferred to the 24hr Observation Unit on Tuesday and admitted or transferred back to the medical ward on Tuesday, the patient would contribute 2 encounters (the first in the ED and the second to the 24hr Observation Unit) since there was time spent in an inpatient location (medical ward) in between the outpatient stays.
+If the patient’s stay in the facility crosses calendar months, the patient will contribute an encounter to the first month the patient was in an outpatient location. For example:
+If patient is in outpatient location on January 31 and February 1 then count as 1 encounter to January and zero to February.
+File Description
+
+Reporting of Measures must adhere to the data format prescribed by the [IG] developed by CDC. To participate in this module, facility personnel responsible for reporting data to NHSN must coordinate with their laboratory and pharmacy information software providers to configure their systems to enable the generation of standard formatted file(s) to be submitted to NHSN. Manual data entry is not available for the NHSN Patient-level AU Module. 
+
+Two types of subject files are required. Additional required files are specified in the Appendices: 
+Monthly reports - Data should be submitted on the first day of each calendar month for the prior month. Data will be submitted from all encounters for patients with at least one ED, or observation, or inpatient type, class or location day during the prior month in the facility. (Example: On February 1st, all ED/observation encounters, and inpatient admissions during at least one calendar day between January 1st and January 31st should be submitted). See Figure 1A. 
+	Selection Criteria: All encounters and admissions for patients with at least one ED, or observation, or inpatient type, class, or location for at least one calendar day during the reporting month at the facility. 
+	Data Elements: For the encounters and admissions identified by the selection criteria, return data elements as specified in Appendix D. 
+
+Quarterly reports - A separate query and data submission will be performed quarterly (Jan-March, April-June, July-Sept, Oct-Dec) on all finalized encounters/discharges with finalized billing from the previous quarter, which will include ICD-10 codes to be used for risk adjustment purposes. The quarterly query is to be submitted no later than 60 days following the end of the quarter. See Figure 1B.
+	Selection Criteria: All encounters and admissions for patients with at least one ED, or observation, or inpatient admissions with patient present at an inpatient location for at least one calendar day during the reporting month at the facility. 
+	Data Elements: For the encounters and admissions identified by the selection criteria, return data elements as specified in Appendix G. 
+
+
+
+Appendix A. List of Antimicrobials
+Please note that mapping of standardized terminology (RXNORM) is provided in the Information Data Model (IDM) found in the Antimicrobial Use Toolkit. The list of NHSN drug codes as well as the drug values used for the development of the CDA files can be found here: Eligible Antimicrobials. 
+
+a Adapted from CLSI M10012
+b While reported separately in the CDA file, Amikacin Liposomal will be rolled up and reported in the NHSN AU Option analysis reports with Amikacin.
+c While reported separately in the CDA file, Colistin will be rolled up and reported in the NHSN AU Option analysis reports with Colistimethate. 
+d Per Paxlovid prescribing information, Nirmatrelvir must be co-administered with Ritonavir. However, for public health surveillance, NHSN AU Option will be capturing only administered Nirmatrelvir.
+e Nirsevimab is a long-acting monoclonal antibody for the prevention of respiratory syncytial virus–associated lower respiratory tract infection among infants and children aged <24 months. 
+(reference: Jones JM, Fleming-Dutra KE, Prill MM, et al. Use of Nirsevimab for the Prevention of Respiratory Syncytial Virus Disease Among Infants and Young Children: Recommendations of the Advisory Committee on Immunization Practices — United States, 2023. MMWR Morb Mortal Wkly Rep 2023;72:920–925. DOI: http://dx.doi.org/10.15585/mmwr.mm7234a4.)
+
+
+Antimicrobial Resistance Option
+High level data elements (AR)
+Define an event
+
+Positive cultures that grew eligible AR organisms (type 1) --deduplication or 
+Eligible AR organisms detected through culture independent rapid diagnostics (type 2)
+and
+1 drug or AR gene was tested 
+
+Specimen sources: blood, CSF, urine, lower respiratory, skin/soft tissue
+
+AR Data elements
+Facility 
+Facility ID: OrgID? OID?
+
+Bacterial and fungal culture results – growth vs no growth, if grew, microorganism identification(s)
+Specimen ID
+Specimen collection date/time
+Specimen source
+Result report date(?) (i.e., date and time timestamp for result)
+Isolate IDs – one specimen can yield multiple isolates
+Antimicrobial susceptibility testing results – refer to current AR Option protocol for organism-drug combinations (LOINC value set needed)
+Isolate ID
+Organism
+Antimicrobial susceptibility test
+Result report date (?) (timestamp for result)
+Specific test type (MIC, E-test, disk diffusion [KB])
+Test value, sign, interpretation
+Final(?) Interpretation after all tests complete
+Results of rapid diagnostics for microorganism detection– organism detected vs not detected – refer to AR Option protocol for organisms of interest (LOINC value set needed)
+Specimen ID
+Specimen collection date/time
+Specimen source
+Result report date(?) (timestamp for result)
+Interpretation
+Results of rapid diagnostics for AR gene detection – AR gene detected vs not detected (LOINC value set needed, refer to Rupert’s proposed AR genes for 2025 CDA IG AUR section) 
+Specimen ID
+Specimen collection date/time
+Specimen source
+Result report date(?) (timestamp for result)
+Interpretation
+
+Patient 
+Patient ID
+Patient care location: for all patients on each day of stay in any inpatient locations, ED, pediatric ED, or 24-hour observation units, the following will be derived from 
+Date/time of admission 
+Date/time of discharge
+How the patient is discharged (e.g., transfer, death)
+Date and time of patient transfer from a location to another within the facility
+Date/time of Encounter (ED, pediatric ED, and 24-hour observation units) –note. If available, collect timestamp of triage. 
+Patient care location type (CDC location type): the location type mapped for each patient care location, for example, intensive care units, general medical wards, stepdown units, hematology wards, oncology wards, etc. 
+Use CDC Healthcare Service Location Code 
+Demographics (at admission or encounter)
+Date of Birth (DOB)
+Sex at birth
+Race
+Ethnicity
+Sexual orientation
+Gender identity
+Insurance coverage
+Patient address
+Marital status
+Primary language (can be many)
+Languages spoken (can be many)
+Birthweight of patients in neonatal locations
+Gestational age of patients in neonatal locations
+Inborn or outborn for patients in neonatal locations Note. Available data elements in FHIR? 
+Final Diagnoses (ICD-10?, timeliness?)
+Diagnoses at admission (SNOMED?)
+Procedure codes and date –note. CPT?
+
+
+The following factors will be evaluated for risk adjustment in the form of days present of patients with the following conditions:
+
+
+
+Deduplication 
+
+NHSN will get all results then perform de-duplication on the back end. 
+
+The facility should evaluate all isolate test results using either the algorithm in Figure 1 (Invasive specimens) or Figure 2 (Non-invasive specimens) to determine reportable AR events for each calendar month. 
+For eligible invasive specimens, there should be 14 days with no positive culture result from the laboratory nor a positive rapid diagnostics result for the patient and specific organism before the facility enters another invasive source AR Event into NHSN for the patient and specific organism (Figure 1). Based on the 14 day rule, at a maximum, a patient would have no more than three invasive isolates per specific organism reported per month. 
+Only 1 event will be calculated towards incidence and prevalence measures. Deduplication rules are as follows:
+Same day
+Cultures vs rapid diagnostic 
+If culture and CIDT in same day and same specimenID  
+Different day
+Cultures vs rapid diagnostic 
+Cultures
+For eligible non-invasive specimens, the facility should report all first non-invasive isolates (chronologically) per patient, per month, per organism as an AR Event (Figure 2).
+
+Removal of Same Day Duplicates:
+
+Multiple isolates of the same organism from the same specimen may produce conflicting results. Facilities should only report one isolate to NHSN, retaining the unique nature of the test results. Facilities must follow the rules listed below to ensure removal of duplicate isolate reports. Duplicates are defined as same species or genus, when identification to species level is not provided, isolated from the same source type (specifically, invasive or non-invasive) from the same patient on the same day. For example, if a patient has a blood specimen and urine specimen collected on the same day and E.coli is isolated from both, because the specimens are from two different source types (invasive vs non-invasive), they are not considered duplicates.
+
+Select the isolate to report to NHSN based on these rules (see Figure 3):
+For invasive source isolate selection, select CSF isolates over blood isolates.
+For non-invasive source isolate selection, select lower respiratory isolates over urine isolates.
+Eliminate isolates on same day without susceptibility test results. Only report isolates with complete/final laboratory testing to NHSN.
+Do not merge test results across multiple isolates (specifically, don’t summarize results across different isolates tested on same day). 
+If two isolates from the same day have conflicting susceptibilities to the panel of antimicrobials tested, report the isolate with the most resistant final interpretation (NS > R > I > S-DD > S > NA). 
+If the lab validated susceptibility results of both isolates but did not provide a final interpretation, report the isolate with the higher amount of drug resistance based on the number of antimicrobials testing first “NS”, if equal amount of “NS” then move to the amount of “R”, then “I”, then “S-DD” then “S”. 
+For example, a facility isolated Candida albicans from two blood specimens collected from the same patient on the same calendar day and the lab validated susceptibility results from both isolates. The first isolate tested “R” to three of the eight antimicrobials and the second isolate tested “R” to four of the eight antimicrobials. The facility should report the second isolate to NHSN because it showed the higher amount of resistance. 
+If two or more isolates have the same number of antimicrobials testing “NS”, “R”, “I”, “S-DD” and “S” and it cannot be determined which is most resistant, then report the isolate that was the first entered into the LIS.
+Do not consider results from drugs that are outside of the NHSN-specified drug panels when determining which isolate to report.
+If the lab performs the same test on the same isolate but the two tests produce conflicting results, report the final interpretation provided by the lab. 
+If the lab did not provide a final interpretation, then report the most resistant interpretation (NS > R > I > S-DD > S > NA) for that specific antimicrobial. 
+For example, if a facility performs two E-tests for the same drug on the same isolate and one produces “Intermediate” while the other produces “Susceptible”, report “Intermediate” as the final interpretation for that specific drug susceptibility.
+If the lab performs specific antimicrobial tests on the same isolate that produce conflicting susceptibility interpretations, and the laboratory did not provide a final summary interpretation, report the most resistant specific test interpretation as the final interpretation (NS > R > I > S-DD > S > NA) for that specific antimicrobial.
+For example, if drug susceptibility results produced MIC = Resistant and E-Test = Intermediate but the lab did not provide a final interpretation, report “Resistant” as the final interpretation for that specific antimicrobial susceptibility. 
+
+Figure 1. Test Result Algorithm for Invasive Specimen Reporting
+
+
+
+Figure 2. Test Result Algorithm for Non-Invasive Specimen Reporting 
+
+Figure 3. Reporting Algorithm for Same Day Duplicates 
+
+
+
+
+
+Measures 
+
+Events will be calculated based on de-duplication logic specific to each event type (type 1, type 2, type 1 or 2). 
+
+Incidence of HO events
+These can be calculated for each pathogen and phenotype/genotype. (see Appendices that list pathogens, phenotypes, and genotypes)
+
+Incidence Rate Table: Users can generate an incidence rate table that includes hospital-onset (HO) events that meet AR Option event definitions. 
+
+
+Stratification available by:
+Specimen source/type/group
+Location
+Patient age group (adult/pediatric/neonatal)
+DRG group
+Elixhauser Index
+
+Prevalence of CO events 
+These can be calculated for each pathogen and phenotype/genotype. (see Appendices that list pathogens, phenotypes, and genotypes)
+
+Prevalence Rate Table: Users can generate two prevalence rate tables that include community-onset (CO) events that meet AR Option event definitions.
+ 
+ 
+
+
+
+Stratification available by:
+Specimen source/type/group
+Location
+Patient age group (adult/pediatric/neonatal)
+DRG group
+Elixhauser Index
+
+
+Percent isolates tested (% Tested)
+Included in antibiogram and AR Organism rate tables (phenotype & genotype)
+
+
+
+
+
+
+Percent of susceptible isolates (%S) 
+Percent susceptible formula for individual drugs included in antibiogram 
+
+
+Stratification available by:
+Location
+Onset
+Specimen source/type/group
+Presence of AR gene
+Patient age group (adult/pediatric/neonatal)
+
+Percent of isolates meeting specific antimicrobial susceptibility testing phenotype/genotype definitions 
+
+% Resistant phenotype identified
+
+
+Refer to Appendix X for phenotype definitions
+
+
+% Resistant genotype detected 
+
+Stratification available by:
+Location
+Onset
+Specimen source/type/group
+Presence of AR gene
+Patient age group (adult/pediatric/neonatal)
+
+Standardized Resistant Infection Ratio (SRIR):
+The Standardized Resistant Infection Ratio (SRIR) is a metric developed by CDC to enable facilities to compare their rates of hospital-onset (HO) drug-resistant infection events to a national benchmark. The SRIR adjusts for various facility level factors that contribute to AR risk within each facility. It compares the actual number of resistant infections to the number predicted, given the standard population (specifically, the __(year) NHSN baseline), adjusting for several risk factors that have been found to be statistically significantly associated with rates of resistant infections. The SRIR is calculated by dividing the number of observed resistant infections by the number of predicted resistant infections. 
+
+ 
+The observed resistant infections are the number of HO AR Events that meet NHSN-specific resistance definitions (for example, CRE, MRSA, multi-drug resistant Pseudomonas aeruginosa). The predicted resistant infections are calculated using predictive models developed by CDC and applied to nationally aggregated ___(year) AR data reported to NHSN. Separate predictive models are developed for each specific resistant organism definition and specimen source (blood, urine, and lower respiratory).
+ 
+The SRIR can be generated for 7 drug-resistant phenotypes from 3 specimen sources (blood, urine, and lower respiratory), for a total of 21 possible SRIRs (see Appendix J). The resistant organisms eligible for SRIR calculation were determined by CDC with input from external experts, including adult, pediatric, and neonatal infectious disease physicians and pharmacists. The drug-resistant phenotypes are listed below (see Appendix I for definitions). 
+ 
+At present, SRIRs are available to facilities that have submitted at least one hospital-onset isolate of the specific organism in the given specimen source during the time period of interest. For example, a Vancomycin-resistant Enterococcus blood SRIR can be generated for the facilities that submitted at least one HO Enterococcus blood event in the given time period. 
+ 
+A SRIR greater than 1.0 indicates that more resistant infections were observed than predicted. A SRIR less than 1.0 indicates that fewer resistant infections were observed than predicted. An SRIR of 0 indicates a facility reported the organism of interest from the specimen source of interest during the correct time period, but the organism was not resistant to the drug(s) specified. For example, using the example of HO VRE in urine, if a hospital reports 10 hospital-onset Enterococcus isolates from urine during the time of interest, and all 10 are reported to be susceptible to vancomycin, the HO VRE SRIR would be 0 because there were 0 observed resistant infection events.
+ 
+A SRIR value may be missing when no HO isolates of the organism of interest were reported from the given specimen source during the time period, or an HO organism of interest was reported for the specimen source but <0.3 events were predicted (minimum precision criterion was not met). Using the example of HO VRE in urine, a facility would receive a missing value for a SRIR if:
+No HO Enterococcus was reported in a urine specimen or,
+HO Enterococcus was reported from urine during the correct time period but there were <0.3 HO VRE events predicted for the time period of interest.
+ 
+SRIRs can be produced by quarter, half-year, year, or cumulative time periods. 
+ 
+SRIR Report: https://www.cdc.gov/nhsn/pdfs/ps-analysis-resources/aur/AR-Option-SRIR-Report_QRG_FINAL.pdf 
+
+Pathogen-specific Standardized Infection Ratio (pSIR):
+The Pathogen-Specific Standardized Infection Ratio (pSIR) is a metric developed by CDC to enable facilities to compare their rates of HO culture-positive infections of specific pathogen to a national benchmark. It compares the actual number of events (pathogens isolated) to the number predicted, given the standard population, adjusting for several risk factors that have been found to be statistically significantly associated with differences in infection incidence. The pSIR is calculated by dividing observed infections of specific pathogens by predicted infections. 
+ 
+ 
+
+The observed infections are the number of HO events reported to NHSN. The predicted infections are calculated using predictive models developed by CDC and applied to nationally aggregated ___AR data reported to NHSN. Separate predictive models are developed for each pathogen and specimen source (blood, urine, and lower respiratory).
+ 
+The pSIR can be generated for 4 pathogens/pathogen groups from 3 specimen sources (blood, urine, and lower respiratory), for a total of 12 possible pSIRs (see Appendix J). 
+Enterobacterales: includes Escherichia coli, Klebsiella aerogenes, Klebsiella oxytoca, Klebsiella pneumoniae, or Enterobacter spp.
+Enterococcus: includes all Enterococcus spp.
+Staphylococcus aureus
+Pseudomonas aeruginosa
+ 
+At present, pSIRs are available to facilities that have submitted at least one HO pathogen in the correct specimen source during the specified time period of interest. 
+ 
+A pSIR greater than 1.0 indicates that more infections were observed than predicted. A pSIR less than 1.0 indicates that fewer infections were observed than predicted. A pSIR value of 0 indicates a facility reported at least one HO isolate from the specimen source of interest during the correct time period, but the pathogen of interest was not isolated. For example, for hospital-onset Enterococcus in urine, if a facility reported one or more HO isolates (any organism) from urine during the time period of interest, but no HO Enterococcus was isolated, the facility would receive a pSIR of 0.
+ 
+A pSIR value may be missing when no positive culture grew reportable AR organisms from the given specimen source during the time period, or an HO organism of interest was reported for the specimen source but <0.3 events were predicted (minimum precision criterion was not met). Using the example of HO Enterococcus in urine, a facility would receive a missing value for a pSIR if:
+No HO positive culture from a urine specimen grew Enterobacterales, Enterococcus, Staphylococcus aureus, or Pseudomonas aeruginosa
+At least one HO pathogen of interest was isolated from urine during the correct time period but there were <0.3 HO Enterococcus events predicted for that time period
+ 
+pSIRs can be produced by quarter, half-year, year, or cumulative time periods. 
+ 
+pSIR Report: https://www.cdc.gov/nhsn/pdfs/ps-analysis-resources/aur/AR-Option-pSIR-Report_QRG_FINAL.pdf
+
+
+
+
+Appendix Z: Value sets
+Add info about where to find value sets & see HOB protocol for value set descriptions
+
+Appendix D. List of Data Elements and FHIR Resources Required for Monthly Reporting
+Note: These data elements will be collected from all patients with an ED or Observation encounter in the prior month or Inpatient admission with at least one inpatient day in the prior month. 
+
+The full FHIR resources of Encounter, Condition, Coverage, Diagnostic Report, Location, Medication, Observation, and Service Request should be transmitted on each patient/encounter in the initial patient population. The FHIR resource of Patient data transmitted should be constrained to only the FHIR data elements listed below in the table. 
+The FHIR data elements listed below are those required for calculation of the measures or for patient matching.
+
+
+The constraints on the data elements can be found in the FHIR data dictionary.
+
+Appendix D. Daily Patient Location
+Submitted on monthly basis for AU
+Medical record number (Current MRN if there was a change)  
+Encounter number (Current encounter number if there was a change)  
+Patient given name  
+Patient middle name  
+Patient last name  
+Date of Birth  
+Daily patient location within the facility* May be the date and time of each transfer within the facility during the encounter
+Appendix E. Monthly Change File
+Data for all patient records that have been merged within the past [X time frame] will be submitted with the following elements. This report will include any patient who had a change in encounter number and/or MRN occurring after an initial report was sent to NHSN.  
+  
+Report (or observation) date-calendar day  
+Old Medical record number  
+New Medical Record Number  
+Old Encounter number  
+New Encounter number  
+Old Patient First Name  
+New Patient First Name   
+Old Patient Middle Name  
+New Patient Middle Name  
+Old Patient Last name  
+New Patient Last Name  
+Old Date of Birth  
+New Date of Birth  
+Old Sex at Birth  
+New Sex at Birth  
+Old Gender ID (Optional)  
+New Gender ID (Optional)  
+Old Patient Zip Code  
+New Patient Zip Code  
+
+
+Appendix F. List of Eligible Organisms for the NHSN AR Option 
+Please note that standardized terminology (SNOMED) mappings are provided in the Antimicrobial Resistance Toolkit. Facilities and vendors should refer to the AR Option Pathogen Roll-up Workbook found in the Antimicrobial Resistance Toolkit for the eligible organisms for AR Option reporting and the complete list of their associated SNOMED codes. Testing methods should follow most recent CLSI guidance as appropriate.
+
+
+
+
+
+
+
+a If the LIS produces urine and non-urine breakpoint results, rely on the specimen source to determine which susceptibility results to report. If the specimen source is urine, report the urine breakpoint susceptibility. If the specimen source is blood, CSF, or lower respiratory, report the non-urine breakpoint susceptibility.
+b If the LIS does not differentiate between Penicillin G and Penicillin V, list susceptibility results under Penicillin G and indicate that Penicillin V was not tested (NA).
+c For Staphylococcus aureus susceptibility testing, if the LIS tests Nafcillin instead of Oxacillin, report Nafcillin susceptibility results as Oxacillin.
+d If the LIS produces meningitis and non-meningitis breakpoint results, rely on the specimen source to determine which susceptibility results to report. If the specimen source is CSF, report the meningitis breakpoint susceptibility. If the specimen source is blood, urine, or lower respiratory, report the non-meningitis breakpoint susceptibility.
+
+
+
+Appendix I. NHSN AR Option Phenotype Definitions
+ 
+Note: The phenotypes defined here for the AR Option only may not match phenotype definitions used in other NHSN Modules. Additionally, the drug classes listed below are specific to laboratory testing and, in some cases, do not match to the specific class defined in the AU Option. The drugs included in each phenotype definition are specific to those included in the reportable drug panel for that organism. Please refer to Appendix F of the AUR Module Protocol for the complete list of drug panels for each organism.
+ 
+a Adapted from CLSI M100
+b A SRIR is available for these phenotypes.
+c The category names are for grouping purposes and are not inclusive of all drugs in that drug class.
+
+Factor used for evaluation of risk adjustment | Data elements needed to construct this | Algorithm and/or filters
+Age | Patient DOB and Date of Admission | For adult SAARs
+Birthweight | Birthweight of patients in neonatal locations
+ | For neonatal SAARs; only required for encounters with at least 1 day present in a neonatal location 
+≤750 g
+751-1000g
+1001-1500g
+1501-2500g
+>2500g
+Gestational Age | Gestational age of patients in neonatal locations
+ | For neonatal SAARs; only required for encounters with at least 1 day present in a neonatal location
+Late onset sepsis/ meningitis | Final Diagnosis | For neonatal SAARs; only required for encounters with at least 1 day present in a neonatal location
+Inborn/outborn | Inborn/outborn | For neonatal SAARs; only required for encounters with at least 1 day present in a neonatal location
+Elixhauser Index | Patient DOB, diagnoses on admission, final diagnoses* | Elixhauser Comorbidity Software Refined for ICD-10-CM (ahrq.gov)
+CDC Location Type  | Location, patient movement date/time | NHSN location mapping
+Current NHSN AU SAAR location grouping 
+DRG Group
+ | Diagnoses and Procedure | ICD-10-CM/PCS MS-DRG v40.0 Definitions Manual (cms.gov)
+MS-DRG Classifications and Software | CMS
+
+Grouping algorithm using Yu et al.( Benchmarking Inpatient Antimicrobial Use: A Comparison of Risk-Adjusted Observed-to-Expected Ratios | Clinical Infectious Diseases | Oxford Academic (oup.com)): ciy354_suppl_supplementary_tables_figures.docx (live.com)
+Bacterial infection diagnosis | Final Diagnoses | PSI_Appendix_F.pdf (ahrq.gov)
+De-duplicated positive bacterial cultures from sterile sites | Lab results (AR Events from patient-level AR) | Refer to AR Option protocol for de-duplication rules
+A filter needed to define “sterile sites” 
+
+Pathogen detected through culture-independent rapid diagnostics from sterile sites | Lab results | Refer to AR Option protocol for de-duplication rules
+A filter needed to define “sterile sites” 
+
+
+Data Element | Details
+Antimicrobial Agents | Defined as select antimicrobial agents and stratified by route of administration (specifically, intravenous, intramuscular, digestive, and respiratory). Refer to Appendix B for a complete list of antimicrobials. The list of select antimicrobials will evolve with time as new agents become commercially available and old agents are removed from the market. Topical antimicrobial agents are not included in the NHSN AU Option.
+Data source | Antimicrobial Administration: We recommend using the facility’s antimicrobial administration data documented in the eMAR and/or BCMA, as opposed to usage derived from other data sources (for example, pharmacy orders, doses dispensed, doses billed).
+ 
+If medication administration data in eMAR or BCMA are not available via FHIR API, medication order/request can serve as a proxy for calculating Antimicrobial Days. 
+
+Note. Literature demonstrated discrepancy between medication administration and order. Facilities that use medication order instead of administration data can receive rate of antimicrobial use, however, their data will be excluded from SAAR baseline and will not be used to generate SAARs.   Cite discrepancy paper. 
+Location | Antimicrobial days are aggregated for each inpatient location, facility-wide inpatient, and three select outpatient acute-care settings (specifically, outpatient ED, pediatric ED, and 24-hour observation area) per the NHSN location definitions.
+Time Unit | Antimicrobial days for a specific antimicrobial agent and stratification by route of administration are aggregated monthly per location.
+
+Patient Care Location-Specific Analyses
+Rate of Antimicrobial Days per 1,000 Days Present
+ 
+
+Notes:
+One patient can contribute only one day present per calendar day for each specific location.
+Summed total may be higher when compared to facility-wide count (reflecting transfers between locations).
+Facility-wide Inpatient Analyses
+Rate of Antimicrobial Days per 1,000 Days Present
+ 
+
+
+Notes:
+One patient can contribute only one day present per calendar day for a facility. Thus, one denominator is obtained for all inpatient locations in an entire facility. 
+The day present measure for facility-wide inpatient should be lower when compared to sum total from location-specific comparison.
+Only include inpatient units where both the antimicrobial days (numerator) and the days present (denominator) can be accurately electronically captured.
+Exclude outpatient locations.
+
+CDC Location Type | CDC Location Code | NSHN Healthcare Service Location (HL7) Code
+Adult Locations |   |  
+Medical Critical Care | IN:ACUTE:CC:M | 1027-2
+Surgical Critical Care | IN:ACUTE:CC:S | 1030-6
+Medical-Surgical Critical Care | IN:ACUTE:CC:MS | 1029-8
+Medical Ward | IN:ACUTE:WARD:M | 1060-3
+Surgical Ward | IN:ACUTE:WARD:S | 1072-8
+Medical-Surgical Ward | IN:ACUTE:WARD:MS | 1061-1
+ONC General Hematology-Oncology Ward | IN:ACUTE:WARD:ONC_HONC | 1232-8
+Adult Step Down Unit | IN:ACUTE:STEP | 1099-1
+Pediatric Locations |   |  
+Pediatric Medical Critical Care | IN:ACUTE:CC:M:PED | 1044-7
+Pediatric Medical-Surgical Critical Care | IN:ACUTE:CC:MS_PED | 1045-4
+Pediatric Medical Ward | IN:ACUTE:WARD:M_PED | 1076-9
+Pediatric Surgical Ward | IN:ACUTE:WARD:S_PED | 1086-8
+Pediatric Medical-Surgical Ward | IN:ACUTE:WARD:MS_PED | 1081-9
+Neonatal Locations |   |  
+Special Care Nursery (Level II) | IN:ACUTE:STEP:NURS | 1041-3
+Neonatal Critical Care (Level II/III) | IN:ACUTE:CC_STEP:NURS | 1039-7
+Neonatal Critical Care (Level III) | IN:ACUTE:CC:NURS | 1040-5
+Neonatal Critical Care (Level IV) | IN:ACUTE:CC:NURS_IV | 1269-0
+
+Classification:
+Route of Administrationa | Definitionb
+Intravenous (IV) | An intravascular route that begins with a vein.
+Intramuscular (IM) | A route that begins within a muscle.
+Digestive Tract  | A route that begins anywhere in the digestive tract extending from the mouth through rectum.c
+Respiratory Tract  | A route that begins within the respiratory tract, including the oropharynx and nasopharynx.
+
+Medical Ward | Monday
+December 28 | Tuesday
+December 29 | Wednesday
+December 30
+Meropenem 1g intravenously every 8 hours | Given: 2300 | Given: 0700
+Given: 1500
+Given: 2300 | Given: 0700
+Amikacin 1000mg intravenously every 24 hours | Given: 2300 | Given: 2300 |  
+ 
+
+Calculation | Monday
+December 28 | Tuesday
+December 29 | Wednesday
+December 30
+Drug-specific Antimicrobial Days (total) | Meropenem Days = 1
+Amikacin Days = 1 | Meropenem Days = 1
+Amikacin Days = 1 | Meropenem Days = 1
+Amikacin Days = 0
+Drug-specific Antimicrobial Days Stratified by Route of Administration | Meropenem Days (IV) = 1 
+Amikacin Days
+(IV) = 1  | Meropenem Daysa
+(IV) = 1 
+Amikacin Days
+(IV) = 1  | Meropenem Days
+(IV) = 1 
+Amikacin Days
+(IV) = 0
+
+Month/
+Year-Location | Antimicrobial Agent | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+
+Month/
+Year-Location | Antimicrobial Agent | Total | IV | IM | Digestive | Respiratory
+December 
+Medical Ward | Meropenem | 3 | 3 | 0 | 0 | 0
+December
+Medical Ward | Amikacin | 2 | 2 | 0 | 0 | 0
+
+ eMAR | Tuesday
+December 1
+Location: MICU | Tuesday
+December 1
+Location: Medical Ward
+Vancomycin 1g intravenously every 8 hours | Given: 0700 | Given: 1500
+Given: 2300
+
+Calculation | Tuesday
+December 1
+Location: MICU | Tuesday
+December 1 
+Location: Medical Ward
+Drug-specific Antimicrobial Days (total) | Vancomycin Days = 1
+  | Vancomycin Days = 1
+ 
+Drug-specific Antimicrobial Days Stratified by Route of Administration | Vancomycin Days (IV) = 1 | Vancomycin Days (IV) = 1
+
+Month/
+Year-Location | Antimicrobial Agent | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+
+Month/
+Year-Location | Antimicrobial Agent | Total | IV | IM | Digestive | Respiratory
+December 
+MICU | Vancomycin  | 1 | 1 | 0 | 0 | 0
+December
+Medical Ward | Vancomycin | 1 | 1 | 0 | 0 | 0
+December
+Facility-wide inpatient | Vancomycin | 1 | 1 | 0 | 0 | 0
+
+eMAR | Thursday
+December 31
+Location: Surgical Ward | Friday
+January 1
+Location: Surgical Ward
+Ceftriaxone 1g intravenously every 24 hours | Given: 0800 | Given: 0800
+ 
+
+Calculation | Thursday
+December 31
+Location: Surgical Ward | Friday
+January 1
+Location: Surgical Ward
+Drug-specific Antimicrobial Days (total) | Ceftriaxone Day = 1 | Ceftriaxone Day = 1
+Drug-specific Antimicrobial Days Stratified by Route of Administration | Ceftriaxone Day (IV) = 1
+  | Ceftriaxone Day (IV) = 1
+ 
+
+Month/
+Year-Location | Antimicrobial Agent | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+ | Drug-specific Antimicrobial Days
+
+Month/
+Year-Location | Antimicrobial Agent | Total | IV | IM | Digestive | Respiratory
+December/
+Surgical Ward | Ceftriaxone | 1 | 1 | 0 | 0 | 0
+January/
+Surgical Ward | Ceftriaxone | 1 | 1 | 0 | 0 | 0
+
+Antimicrobial Agent | Antimicrobial 
+Category | Antimicrobial
+Classa | Antimicrobial
+Subclassa | AMANTADINE
+Anti-influenza | M2 ion channel inhibitors |  | AMIKACIN | Antibacterial
+Aminoglycosides |  | AMIKACIN LIPOSOMALb | Antibacterial | Aminoglycosides
+ | AMOXICILLIN | Antibacterial | Penicillins | Aminopenicillin
+AMOXICILLIN/
+CLAVULANATE | Antibacterial | β-lactam/β-lactamase 
+inhibitor combination  |  | AMPHOTERICIN B 
+Antifungal  | Polyenes |  | AMPHOTERICIN B LIPID COMPLEX | Antifungal 
+Polyenes |  | AMPHOTERICIN B LIPOSOMAL | Antifungal | Polyenes
+ | AMPICILLIN | Antibacterial | Penicillins | Aminopenicillin
+AMPICILLIN/
+SULBACTAM | Antibacterial | β-lactam/β-lactamase 
+inhibitor combination  |  | ANIDULAFUNGIN
+Antifungal | Echinocandins |  | AZITHROMYCIN | Antibacterial
+Macrolides |  | AZTREONAM | Antibacterial | Monobactams
+ | BALOXAVIR MARBOXIL | Anti-influenza | Polymerase acidic endonuclease inhibitors | 
+CASPOFUNGIN | Antifungal | Echinocandins |  | CEFACLOR
+Antibacterial | Cephalosporins | Cephalosporin 2nd generation | CEFADROXIL | Antibacterial
+Cephalosporins | Cephalosporin 1st generation | CEFAZOLIN | Antibacterial | Cephalosporins
+Cephalosporin 1st generation | CEFDINIR | Antibacterial | Cephalosporins | Cephalosporin 3rd generation
+CEFEPIME | Antibacterial | Cephalosporins | Cephalosporin 4th generation | CEFIDEROCOL
+Antibacterial | Cephalosporins | Siderophore | CEFIXIME | Antibacterial
+Cephalosporins | Cephalosporin 3rd generation | CEFOTAXIME | Antibacterial | Cephalosporins
+Cephalosporin 3rd generation | CEFOTETAN | Antibacterial | Cephalosporins | Cephamycin
+CEFOXITIN | Antibacterial | Cephalosporins | Cephamycin | CEFPODOXIME 
+Antibacterial | Cephalosporins | Cephalosporin 3rd generation | CEFPROZIL | Antibacterial
+Cephalosporins | Cephalosporin 2nd generation | CEFTAROLINE | Antibacterial | Cephalosporins
+Cephalosporins with anti-MRSA activity | CEFTAZIDIME | Antibacterial | Cephalosporins | Cephalosporin 3rd generation
+CEFTAZIDIME/AVIBACTAM | Antibacterial | β-lactam/β-lactamase 
+inhibitor combination |  | CEFTOLOZANE/
+TAZOBACTAM
+Antibacterial | β-lactam/β-lactamase 
+inhibitor combination  |  | CEFTRIAXONE | Antibacterial
+Cephalosporins | Cephalosporin 3rd generation | CEFUROXIME | Antibacterial | Cephalosporins
+Cephalosporin 2nd generation | CEPHALEXIN | Antibacterial | Cephalosporins | Cephalosporin 1st generation
+CHLORAMPHENICOL | Antibacterial | Phenicols |  | CIPROFLOXACIN
+Antibacterial | Fluoroquinolones |  | CLARITHROMYCIN | Antibacterial
+Macrolides |  | CLINDAMYCIN | Antibacterial | Lincosamides
+ | COLISTIMETHATE | Antibacterial | Polymyxins | 
+COLISTINc | Antibacterial | Polymyxins |  | DALBAVANCIN
+Antibacterial | Glycopeptides | Lipoglycopeptides | DAPTOMYCIN | Antibacterial
+Lipopeptides |  | DELAFLOXACIN | Antibacterial | Fluoroquinolones
+ | DICLOXACILLIN | Antibacterial | Penicillins | Penicillinase-stable 
+penicillins
+DOXYCYCLINE | Antibacterial | Tetracyclines |  | ERAVACYCLINE
+Antibacterial | Tetracyclines | Fluorocycline | ERTAPENEM | Antibacterial
+Carbapenems |  | ERYTHROMYCIN | Antibacterial | Macrolides
+ | FIDAXOMICIN | Antibacterial | Macrocyclic | 
+FLUCONAZOLE | Antifungal | Azoles |  | FOSFOMYCIN
+Antibacterial | Fosfomycins |  |  | 
+ |  | GENTAMICIN | Antibacterial | Aminoglycosides
+ | IMIPENEM/
+CILASTATIN | Antibacterial | Carbapenems | 
+IMIPENEM/CILASTATIN/
+RELEBACTAM | Antibacterial | β-lactam/β-lactamase 
+inhibitor combination |  | ISAVUCONAZONIUM
+Antifungal | Azoles |  | ITRACONAZOLE | Antifungal
+Azoles |  | LEFAMULIN | Antibacterial | Pleuromutilins 
+ | LEVOFLOXACIN | Antibacterial | Fluoroquinolones | 
+LINEZOLID | Antibacterial | Oxazolidinones |  | MEROPENEM
+Antibacterial | Carbapenems |  | MEROPENEM/ VABORBACTAM | Antibacterial
+β-lactam/β-lactamase 
+inhibitor combination |  | METRONIDAZOLE | Antibacterial | Nitroimidazoles
+ | MICAFUNGIN | Antifungal | Echinocandins | 
+MINOCYCLINE | Antibacterial | Tetracyclines |  | MOLNUPIRAVIR
+Antiviral | Nucleoside Analog |  | MOXIFLOXACIN | Antibacterial
+Fluoroquinolones |  | NAFCILLIN | Antibacterial | Penicillins
+Penicillinase-stable 
+penicillins | NIRMATRELVIRd | Antiviral | Protease Inhibitor | 
+NIRSEVIMABe | Monoclonal Antibody |  |  | 
+NITROFURANTOIN | Antibacterial | Nitrofurans |  | OMADACYCLINE
+Antibacterial | Tetracyclines | Aminomethylcycline | ORITAVANCIN | Antibacterial
+Glycopeptides | Lipoglycopeptides | OSELTAMIVIR | Anti-influenza | Neuraminidase inhibitors
+ | OXACILLIN | Antibacterial | Penicillins | Penicillinase-stable 
+penicillins
+PENICILLIN G | Antibacterial | Penicillins | Penicillin | PENICILLIN V
+Antibacterial | Penicillins | Penicillin | PERAMIVIR | Anti-influenza
+Neuraminidase inhibitors |  | PIPERACILLIN/
+TAZOBACTAM | Antibacterial | β-lactam/β-lactamase 
+inhibitor combination
+ | PLAZOMICIN | Antibacterial | Aminoglycosides | 
+POLYMYXIN B | Antibacterial | Polymyxins |  | POSACONAZOLE
+Antifungal | Azoles |  |  | 
+ |  | REMDESIVIR | Antiviral | Nucleotide Analog
+ | REZAFUNGIN | Antifungal | Echinocandins | 
+ | RIFAMPIN | Antibacterial | Rifampin | 
+RIMANTADINE | Anti-influenza | M2 ion channel inhibitors |  | SULBACTAM/ DURLOBACTAM
+Antibacterial | β-lactam/β-lactamase 
+inhibitor combination |  |  | SULFAMETHOXAZOLE/
+TRIMETHOPRIM
+Antibacterial | Folate pathway inhibitors |  | TEDIZOLID | Antibacterial
+Oxazolidinones |  | TELAVANCIN  | Antibacterial | Glycopeptides
+Lipoglycopeptides | TETRACYCLINE | Antibacterial | Tetracyclines | 
+TIGECYCLINE | Antibacterial | Glycylcyclines |  | TINIDAZOLE
+Antibacterial | Nitroimidazoles |  | TOBRAMYCIN | Antibacterial
+Aminoglycosides |  | VANCOMYCIN | Antibacterial | Glycopeptides
+Glycopeptide | VORICONAZOLE | Antifungal | Azoles | 
+ZANAMIVIR | Anti-influenza | Neuraminidase inhibitors | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Factor used for evaluation of risk adjustment | Data elements needed to construct this | Algorithm and/or filters
+Age | Patient DOB and Date of Admission | For adult SAARs
+Birthweight | Birthweight of patients in neonatal locations
+ | For neonatal SAARs; only required for encounters with at least 1 day present in a neonatal location 
+≤750 g
+751-1000g
+1001-1500g
+1501-2500g
+>2500g
+Gestational Age | Gestational age of patients in neonatal locations
+ | For neonatal SAARs; only required for encounters with at least 1 day present in a neonatal location
+Inborn/outborn | Inborn/outborn | For neonatal SAARs; only required for encounters with at least 1 day present in a neonatal location
+Elixhauser Index | Patient DOB, diagnoses on admission, final diagnoses* | Elixhauser Comorbidity Software Refined for ICD-10-CM (ahrq.gov)
+CDC Location Type  | Location, patient movement date/time | NHSN location mapping
+Current NHSN AU SAAR location grouping 
+DRG Group
+ | Diagnoses and Procedure | ICD-10-CM/PCS MS-DRG v40.0 Definitions Manual (cms.gov)
+MS-DRG Classifications and Software | CMS
+
+Grouping algorithm using Yu et al.( Benchmarking Inpatient Antimicrobial Use: A Comparison of Risk-Adjusted Observed-to-Expected Ratios | Clinical Infectious Diseases | Oxford Academic (oup.com)): ciy354_suppl_supplementary_tables_figures.docx (live.com)
+
+Organism | Specimen Type | Antimicrobial Agents | Resistant Genes
+Acinetobacter 
+(All Acinetobacter species noted in the AR Option Pathogen Roll-up Workbook) | Blood, Urine, Lower Respiratory, CSF | Amikacin
+Ampicillin-sulbactam
+Cefepime
+Cefiderocol
+Cefotaxime
+Ceftazidime
+Ceftriaxone
+Ciprofloxacin
+Colistin
+Doripenem
+Doxycycline
+Gentamicin
+Imipenem
+Levofloxacin
+Meropenem
+Minocycline
+Piperacillin-tazobactam
+Polymyxin B
+Tobramycin
+Trimethoprim-sulfamethoxazole | blaKPC
+blaNDM
+blaVIM
+blaIMP
+Other OXA-type     Carbapenemases (OXA-23-like, OXA-24/40-like, OXA-58-like)
+ | Additional Agents for Urine | Tetracycline | 
+Candida albicans
+Candida auris
+Candida glabrata
+Candida parapsilosis
+Candida tropicalis
+ 
+  | Blood, Urine, CSF
+Note: Lower respiratory will not be collected for Candida spp. | Anidulafungin
+Caspofungin
+Fluconazole
+Micafungin
+Posaconazole
+Voriconazole | 
+ | Additional Agents for Urine | None | 
+
+Citrobacter amalonaticus
+Citrobacter braakii
+Citrobacter freundii
+Citrobacter freundii complex
+Citrobacter koseri 
+Citrobacter youngae
+Enterobacter
+(All Enterobacter species noted in the AR Option Pathogen Roll-up Workbook)
+Escherichia coli
+Klebsiella aerogenes
+Klebsiella oxytoca
+Klebsiella pneumoniae
+Morganella morganii
+Proteus mirabilis
+Proteus penneri
+Proteus vulgaris
+Serratia marcescens | Blood, Urine, Lower Respiratory, CSF | Amikacin
+Amoxicillin-clavulanic acid
+Ampicillin
+Ampicillin-sulbactam
+Aztreonam
+Cefazolin (urine or non-urine breakpoints)a
+Cefepime
+Cefiderocol
+Cefotaxime
+Cefotetan
+Cefoxitin
+Ceftaroline
+Ceftazidime
+Ceftazidime-avibactam
+Ceftolozane-tazobactam
+Ceftriaxone
+Cefuroxime
+Chloramphenicol
+Ciprofloxacin
+Colistin
+Doripenem
+Doxycycline
+Ertapenem
+Gentamicin
+Imipenem
+Imipenem-relebactam with Cilastatin
+Levofloxacin
+Meropenem
+Meropenem-vaborbactam
+Minocycline
+Piperacillin-tazobactam
+Polymyxin B
+Tetracycline 
+Trimethoprim-sulfamethoxazole
+Tobramycin | blaKPC
+blaNDM
+blaVIM
+blaIMP 
+OXA-48-like
+blaCTX-M
+MCR*
+ | Additional Agents for Urine | Fosfomycin
+Nitrofurantoin
+Sulfisoxazole
+Trimethoprim | 
+Enterococcus
+(All Enterococcus species noted in the AR Option Pathogen Roll-up Workbook)
+Enterococcus faecalis
+Enterococcus faecium
+  | Blood, Urine, Lower Respiratory, CSF | Ampicillin
+Dalbavancin
+Daptomycin 
+Gentamicin 
+Gentamicin high potency
+Linezolid
+Oritavancin
+Penicillinb
+Quinupristin-dalfopristin
+Streptomycin 
+Streptomycin high potency
+Tedizolid 
+Telavancin
+Vancomycin
+ 
+Note: For Gentamicin and Streptomycin only:
+Synergistic = Susceptible 
+Non-synergistic = Resistant  |  vanA
+ vanB
+ | Additional Agents for Urine
+Note: Exclude Gentamicin and Streptomycin | Ciprofloxacin
+Fosfomycin
+Levofloxacin
+Nitrofurantoin
+Tetracycline | 
+
+Pseudomonas aeruginosa | Blood, Urine, Lower Respiratory, CSF
+  | Amikacin
+Aztreonam
+Cefepime
+Cefiderocol
+Ceftazidime
+Ceftazidime-avibactam
+Ceftolozane-tazobactam
+Ciprofloxacin
+Colistin
+Doripenem
+Gentamicin
+Imipenem
+Imipenem-relebactam with Cilastatin
+Levofloxacin
+Meropenem
+Piperacillin-tazobactam
+Polymyxin B
+Tobramycin | blaKPC
+blaNDM
+blaVIM
+blaIMP
+ | Additional Agents for Urine | None | 
+
+Staphylococcus aureus
+  | Blood, Urine, Lower Respiratory, CSF | Azithromycin
+Cefoxitin
+Ceftaroline
+Chloramphenicol
+Ciprofloxacin
+Clarithromycin
+Clindamycin
+Dalbavancin
+Daptomycin
+Doxycycline
+Erythromycin
+Gentamicin
+Lefamulin
+Levofloxacin
+Linezolid
+Minocycline
+Moxifloxacin
+Oritavancin
+Oxacillin or Nafcillinc
+Penicillinb
+Rifampin
+Tedizolid
+Telavancin
+Tetracycline
+Trimethoprim-sulfamethoxazole
+Vancomycin | mecA
+mecC
+ MREJ
+ | Additional Agents for Urine | Nitrofurantoin
+Sulfisoxazole
+Trimethoprim | 
+Stenotrophomonas maltophilia | Blood, Urine, Lower Respiratory, CSF | Cefiderocol
+Ceftazidime
+Chloramphenicol
+Levofloxacin
+Minocycline
+Trimethoprim-sulfamethoxazole | 
+ | Additional Agents for Urine | None | 
+
+Streptococcus agalactiae  | Blood, Urine, Lower Respiratory, CSF | Ampicillin
+Azithromycin
+Cefepime
+Cefotaxime
+Ceftaroline
+Ceftriaxone
+Chloramphenicol
+Clarithromycin
+Clindamycin
+Dalbavancin
+Daptomycin
+Erythromycin
+Levofloxacin
+Linezolid 
+Oritavancin
+Penicillinb
+Tedizolid
+Telavancin
+Vancomycin | 
+ | Additional Agents for Urine | None | 
+
+Streptococcus pneumoniae | Blood, Urine, Lower Respiratory, CSF 
+  | Amoxicillin
+Amoxicillin-clavulanic acid
+Azithromycin
+Cefepime (meningitis or non-meningitis breakpoints)d
+Cefotaxime (meningitis or non-meningitis breakpoint)d
+Ceftaroline
+Ceftriaxone (meningitis or non-meningitis breakpoint)d
+Cefuroxime (parenteral breakpoint)
+Chloramphenicol
+Clarithromycin
+Clindamycin 
+Doxycycline
+Ertapenem
+Erythromycin
+Gemifloxacin
+Imipenem
+Lefamulin
+Levofloxacin
+Linezolid
+Meropenem
+Moxifloxacin
+Penicillinb (meningitis or non-meningitis breakpoint)d
+Penicillin Vb (oral breakpoint)
+Rifampin 
+Tetracycline
+Trimethoprim-sulfamethoxazole
+Vancomycin | 
+ | Additional Agents for Urine | None | 
+
+Phenotype Name | Phenotype Code | Phenotype Definitiona
+Methicillin-resistant Staphylococcus aureusb | MRSA_AR | Staphylococcus aureus that has tested Resistant (R) to at least one of the following: oxacillin or cefoxitin
+Carbapenem-resistant Enterobacterales (expanded) | CREexpanded_AR | Any Citrobacter amalonaticus, Citrobacter braakii, Citrobacter freundii, Citrobacter freundii complex, Citrobacter koseri, Citrobacter youngae, Enterobacter spp., E. coli, Klebsiella aerogenes, Klebsiella oxytoca, Klebsiella pneumoniae, and Serratia marcescens that has tested Resistant (R) to at least one of the following: imipenem, meropenem, doripenem, ertapenem, meropenem/vaborbactam, or imipenem/relebactam
+OR
+Any Proteus mirabilis, Proteus penneri, Proteus vulgaris, and Morganella morganii that has tested Resistant (R) to at least one of the following: meropenem, doripenem, ertapenem, or meropenem/vaborbactam
+Carbapenem-resistant Enterobacteralesb (E. coli, Klebsiella, or Enterobacter) | CREall_AR | Any Escherichia coli, Klebsiella aerogenes, Klebsiella oxytoca, Klebsiella pneumoniae, or Enterobacter spp. that has tested Resistant (R) to at least one of the following: imipenem, meropenem, doripenem, ertapenem, meropenem/vaborbactam, or imipenem/relebactam
+Carbapenem-resistant E. coli | CREecoli_AR | Any Escherichia coli that has tested Resistant (R) to at least one of the following: imipenem, meropenem, doripenem, ertapenem, meropenem/vaborbactam, or imipenem/relebactam
+Carbapenem-resistant Enterobacter spp. and Klebsiella aerogenes | CREenterobacter_AR | Any Enterobacter spp. or Klebsiella aerogenes that has tested Resistant (R) to at least one of the following: imipenem, meropenem, doripenem, ertapenem, meropenem/vaborbactam, or imipenem/relebactam
+Carbapenem-resistant Klebsiella pneumoniae/oxytoca | CREklebsiella_AR | Any Klebsiella oxytoca or Klebsiella pneumoniae that has tested Resistant (R) to at least one of the following: imipenem, meropenem, doripenem, ertapenem, meropenem/vaborbactam, or imipenem/relebactam
+Carbapenem-non-susceptible Pseudomonas aeruginosa | carbNS_PA_AR | Pseudomonas aeruginosa that has tested either Intermediate (I) or Resistant (R) to at least one of the following: imipenem, meropenem, doripenem or imipenem/relebactam
+Extended-spectrum cephalosporin-resistant Enterobacteralesb  | ESCEall_AR | Any Escherichia coli, Klebsiella aerogenes, Klebsiella oxytoca, Klebsiella pneumoniae, or Enterobacter spp. that has tested Resistant (R) to at least one of the following: cefepime, ceftriaxone, cefotaxime, ceftazidime, ceftazidime-avibactam, or ceftolozane-tazobactam
+Extended-spectrum cephalosporin-resistant E. coli | ESCecoli_AR | Any Escherichia coli that has tested Resistant (R) or Intermediate (I) to at least one of the following: cefepime, ceftriaxone, cefotaxime, ceftazidime, ceftazidime-avibactam, or ceftolozane-tazobactam
+Extended-spectrum cephalosporin-resistant Klebsiella pneumoniae/oxytoca | ESCklebsiella_AR | Any Klebsiella oxytoca or Klebsiella pneumoniae that has tested Resistant (R) or Intermediate (I) to at least one of the following: cefepime, ceftriaxone, cefotaxime, ceftazidime, ceftazidime-avibactam, or ceftolozane-tazobactam
+Fluoroquinolone-resistant Enterobacteralesb | FQE_AR | Any Escherichia coli, Klebsiella aerogenes, Klebsiella oxytoca, Klebsiella pneumoniae, or Enterobacter spp. that has tested Resistant (R) to at least one of the following: ciprofloxacin, levofloxacin, or moxifloxacin
+Fluoroquinolone-resistant Pseudomonas aeruginosab | FQPA_AR | Pseudomonas aeruginosa that has tested Resistant (R) to at least one of the following: ciprofloxacin or levofloxacin
+Multidrug-resistant Pseudomonas aeruginosab | MDR_PA_AR | Pseudomonas aeruginosa that has tested either Intermediate (I) or Resistant (R) to at least one drug in at least three of the following six categoriesc:
+Extended-spectrum cephalosporin (cefepime, ceftazidime, ceftazidime-avibactam, ceftolozane-tazobactam)
+Fluoroquinolones (ciprofloxacin, levofloxacin)
+Aminoglycosides (amikacin, gentamicin, tobramycin)
+Carbapenems (imipenem, meropenem, doripenem, imipenem/relebactam)
+Piperacillin/tazobactam
+Cefiderocol
+Carbapenem-non-susceptible Acinetobacter spp. | carbNS_Acine_AR | Any Acinetobacter spp. that has tested either Intermediate (I) or Resistant (R) to at least one of the following: imipenem, meropenem, or doripenem
+Multidrug-resistant Acinetobacter spp. | MDR_Acine_AR | Any Acinetobacter spp. that has tested either Intermediate (I) or Resistant (R) to at least one drug in at least three of the following seven categoriesc:
+ 
+Extended-spectrum cephalosporin (cefepime, ceftazidime, ceftriaxone, cefotaxime)
+Fluoroquinolones (ciprofloxacin, levofloxacin)
+Aminoglycosides (amikacin, gentamicin, tobramycin)
+Carbapenems (imipenem, meropenem, doripenem)
+Piperacillin/tazobactam
+Ampicillin/sulbactam
+Cefiderocol
+Vancomycin-resistant Enterococcus faecalis | VREfaecalis_AR | Enterococcus faecalis that has tested Resistant (R) to vancomycin
+Vancomycin-resistant Enterococcus faecium | VREfaecium_AR | Enterococcus faecium that has tested Resistant (R) to vancomycin
+Vancomycin-resistant Enterococcusb | VREgeneral_AR | Any Enterococcus spp. that has tested Resistant (R) to vancomycin
+Fluconazole-resistant Candida albicans/auris/glabrata/parapsilosis/tropicalis | FR_Candi_AR | Any Candida albicans, Candida auris, Candida glabrata, Candida parapsilosis, or Candida tropicalis that has tested Resistant (R) to fluconazole
+Drug-resistant Streptococcus pneumoniae | DR_SP_AR | Streptococcus pneumoniae that has tested either Intermediate (I) or Resistant (R) to at least one of the antimicrobials listed in the NHSN AR Option defined drug panel
+
