@@ -290,6 +290,17 @@ This document specifies all test cases for the HOB (Hospital-Onset Bacteremia & 
 | Observation 1 | Pseudomonas aeruginosa (52499004), Positive |
 | Observation 2 | Carbapenem resistant Pseudomonas aeruginosa (726492000), Positive |
 
+**Why Two Specimens?**
+
+This test requires two blood cultures to validate the COB exclusion logic:
+
+| Day | Specimen | Organism | SNOMED Code | Event Type |
+|-----|----------|----------|-------------|------------|
+| Day 2 | Specimen 1 | P. aeruginosa | 52499004 | **COB** (Community-Onset, day 1-3) |
+| Day 6 | Specimen 2 | CR P. aeruginosa | 726492000 | Would be HOB, but **EXCLUDED** |
+
+The Day 6 culture timing qualifies for HOB (day 4+), but it must be excluded because the organism matches the prior COB event. Without both cultures, we cannot test whether the measure correctly matches organisms across different SNOMED codes.
+
 **Expected Outcome**:
 - Initial Population: 1
 - HOB Event: **Negative** (matching pathogenic organisms on day 2 and 6 - same species despite different codes)
