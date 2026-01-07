@@ -83,6 +83,86 @@ class FHIRBundleGenerator:
         self.bundle["entry"].append(entry)
         return resource_id
 
+    def _build_encounter_locations(self,
+                                   location_id: str = None,
+                                   locations: List[Dict] = None,
+                                   encounter_id: str = None,
+                                   default_start: str = None,
+                                   default_end: str = None) -> List[Dict]:
+        """
+        Build the location array for an Encounter resource.
+
+        Supports both simple single-location (via location_id) and complex
+        multi-location scenarios with periods (via locations list).
+
+        Args:
+            location_id: Simple single location ID (backward compatible)
+            locations: List of location dicts, each containing:
+                       - location_id: Reference to Location resource (required)
+                       - display: Display name (optional)
+                       - period: Dict with 'start' and 'end' (optional)
+                       - physicalType: Dict with 'code' and 'display' (optional)
+                       - status: Location status (optional, defaults to 'active')
+            encounter_id: The encounter ID for generating default location refs
+            default_start: Default period start
+            default_end: Default period end
+
+        Returns:
+            List of FHIR Encounter.location entries
+        """
+        # If locations list is provided, use it (multi-location scenario)
+        if locations:
+            encounter_locations = []
+            for loc in locations:
+                loc_entry = {
+                    "location": {
+                        "reference": f"Location/{loc['location_id']}"
+                    },
+                    "status": loc.get("status", "active")
+                }
+
+                # Add display if provided
+                if loc.get("display"):
+                    loc_entry["location"]["display"] = loc["display"]
+
+                # Add period if provided
+                if loc.get("period"):
+                    loc_entry["period"] = loc["period"]
+
+                # Add physicalType if provided
+                if loc.get("physicalType"):
+                    physical_type = loc["physicalType"]
+                    loc_entry["physicalType"] = {
+                        "coding": [{
+                            "system": CODE_SYSTEMS["LocationPhysicalType"],
+                            "code": physical_type.get("code", "ro"),
+                            "display": physical_type.get("display", "Room")
+                        }],
+                        "text": physical_type.get("display", "Room")
+                    }
+
+                encounter_locations.append(loc_entry)
+
+            return encounter_locations
+
+        # Otherwise, use simple single-location (backward compatible)
+        return [
+            {
+                "location": {
+                    "reference": f"Location/{location_id if location_id else 'default-loc-' + encounter_id[:8]}"
+                },
+                "status": "active",
+                "physicalType": {
+                    "coding": [{
+                        "system": CODE_SYSTEMS["LocationPhysicalType"],
+                        "code": "ro",
+                        "display": "Room"
+                    }]
+                },
+                "period": {"start": default_start, "end": default_end}
+            }
+        ]
+
     # =========================================================================
     # PATIENT
     # =========================================================================
@@ -246,6 +326,7 @@ class FHIRBundleGenerator:
                       class_display: str = None,
                       type_coding: List[Dict] = None,
                       location_id: str = None,
+                      locations: List[Dict] = None,
                       discharge_disposition: Dict = None) -> str:
         """
         Add an Encounter resource.
@@ -257,7 +338,14 @@ class FHIRBundleGenerator:
             class_code: Encounter class code (IMP, EMER, AMB, etc.)
             class_display: Display text for class (auto-mapped if not provided)
             type_coding: List of type codings [{system, code, display}]
-            location_id: Optional location ID to reference
+            location_id: Optional single location ID to reference (simple case)
+            locations: Optional list of location dicts for multiple locations with periods.
+                       Each dict can contain:
+                       - location_id: Reference to Location resource (required)
+                       - display: Display name for the location (optional)
+                       - period: Dict with 'start' and 'end' datetimes (optional)
+                       - physicalType: Dict with 'code' and 'display' (optional)
+                       - status: Location status like 'active' (optional, defaults to 'active')
             discharge_disposition: Optional discharge disposition coding dict
 
         Returns:
@@ -369,22 +457,13 @@ class FHIRBundleGenerator:
                 }
             },
             "partOf": {"reference": f"Encounter/parent-{encounter_id[:8]}"},
-            "location": [
-                {
-                    "location": {
-                        "reference": f"Location/{location_id if location_id else 'default-loc-' + encounter_id[:8]}"
-                    },
-                    "status": "active",
-                    "physicalType": {
-                        "coding": [{
-                            "system": CODE_SYSTEMS["LocationPhysicalType"],
-                            "code": "ro",
-                            "display": "Room"
-                        }]
-                    },
-                    "period": {"start": start, "end": end}
-                }
-            ]
+            "location": self._build_encounter_locations(
+                location_id=location_id,
+                locations=locations,
+                encounter_id=encounter_id,
+                default_start=start,
+                default_end=end
+            )
         }
 
         self._add_entry(encounter, encounter_id)

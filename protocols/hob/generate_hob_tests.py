@@ -8,7 +8,7 @@ Protocol Definition:
 - Hospital Day 1 = Admission date
 - Measurement Period: 2025-01-01 to 2025-01-31
 
-Test Cases Generated (10 total):
+Test Cases Generated (11 total):
 Primary HOB Cases:
 1. HOB Positive - Day 4 S. aureus
 2. HOB Positive - Day 5 Candida (fungemia)
@@ -26,6 +26,9 @@ Matching Commensal HOB Cases:
 Non-Measure HOB Cases:
 9. Non-Measure High Risk - E. coli + AML + Neutropenia
 10. Measurable No Risk - S. aureus + Diabetes/HTN (no non-preventability)
+
+Species Code Matching Cases:
+11. HOB Excluded - Same species with different SNOMED codes (P. aeruginosa vs CR P. aeruginosa)
 
 Usage:
     cd protocols/hob
@@ -64,6 +67,8 @@ ORGANISMS = {
     "candida": {"code": "53326005", "display": "Candida albicans"},
     "s_epidermidis": {"code": "60875001", "display": "Staphylococcus epidermidis"},  # Excluded skin commensal
     "no_growth": {"code": "264868006", "display": "No growth"},
+    "p_aeruginosa": {"code": "52499004", "display": "Pseudomonas aeruginosa"},
+    "p_aeruginosa_cr": {"code": "726492000", "display": "Carbapenem resistant Pseudomonas aeruginosa"},
 }
 
 # Antibiotic RxNorm codes
@@ -761,6 +766,139 @@ def create_measurable_no_risk_factors():
 
 
 # =============================================================================
+# Test Case 11: HOB Excluded - Same Species, Different SNOMED Codes
+# =============================================================================
+
+def create_hob_excluded_same_species_different_codes():
+    """
+    Test Case 11: HOB Excluded - Same Species with Different SNOMED Codes
+
+    Patient admitted January 2, 2025 (Day 1)
+    Blood culture on Day 2 (January 3): Pseudomonas aeruginosa (52499004) - COB event
+    Blood culture on Day 6 (January 7): Carbapenem resistant P. aeruginosa (726492000)
+
+    Location transfers:
+    - Emergency Dept (1108-0): 08:00-12:00
+    - 24 Hour Observation Area (1162-7): 12:05-20:00
+    - Medical Ward (1060-3): 20:05 onwards
+
+    Key Insight: Both codes represent the SAME SPECIES (Pseudomonas aeruginosa).
+    The resistance phenotype does not change organism identity for COB exclusion.
+
+    Expected:
+    - Initial Population: 1 (qualifying inpatient encounter)
+    - COB Event: Positive (day 2 culture)
+    - HOB Event: Excluded (same species as prior COB, despite different SNOMED code)
+    """
+    gen = FHIRBundleGenerator("HOBExcluded_SameSpeciesDifferentCodes")
+
+    # Add patient (adult male)
+    gen.add_patient(
+        given_name="HOBExcluded",
+        family_name="SameSpeciesDiffCodes",
+        birth_date="1972-11-30",
+        gender="male"
+    )
+
+    # Add multiple locations for patient transfers
+    # Location 1: Emergency Department
+    loc_ed = gen.add_location(location_type={
+        "system": CODE_SYSTEMS["HSLOC"],
+        "code": "1108-0",
+        "display": "Emergency Department"
+    })
+
+    # Location 2: 24 Hour Observation Area
+    loc_obs = gen.add_location(location_type={
+        "system": CODE_SYSTEMS["HSLOC"],
+        "code": "1162-7",
+        "display": "24 Hour Observation Area"
+    })
+
+    # Location 3: Medical Ward
+    loc_med = gen.add_location(location_type={
+        "system": CODE_SYSTEMS["HSLOC"],
+        "code": "1060-3",
+        "display": "Medical Ward"
+    })
+
+    # Add inpatient encounter - Day 1 = January 2, 2025
+    # With multiple locations showing patient transfers
+    enc_id = gen.add_encounter(
+        start="2025-01-02T08:00:00.000Z",
+        end="2025-01-10T12:00:00.000Z",
+        status="finished",
+        class_code="IMP",
+        type_coding=[{
+            "system": CODE_SYSTEMS["SNOMED"],
+            "code": "183452005",
+            "display": "Emergency hospital admission"
+        }],
+        locations=[
+            {
+                "location_id": loc_ed,
+                "display": "Emergency Dept.",
+                "period": {
+                    "start": "2025-01-02T08:00:00.000Z",
+                    "end": "2025-01-02T12:00:00.000Z"
+                }
+            },
+            {
+                "location_id": loc_obs,
+                "display": "Adult Observation Department",
+                "period": {
+                    "start": "2025-01-02T12:05:00.000Z",
+                    "end": "2025-01-02T20:00:00.000Z"
+                }
+            },
+            {
+                "location_id": loc_med,
+                "display": "General Medicine Ward",
+                "period": {
+                    "start": "2025-01-02T20:05:00.000Z",
+                    "end": "2025-01-10T08:00:00.000Z"
+                }
+            },
+            {
+                "location_id": loc_med,
+                "display": "Room 123",
+                "physicalType": {"code": "ro", "display": "Room"}
+            },
+            {
+                "location_id": loc_med,
+                "display": "Room 1 / Bed 2",
+                "physicalType": {"code": "bd", "display": "Bed"}
+            }
+        ]
+    )
+
+    # Add coverage
+    gen.add_coverage(
+        start="2025-01-01",
+        end="2025-12-31"
+    )
+
+    # Blood culture on Day 2 (January 3, 2025) - COB event with P. aeruginosa
+    gen.add_blood_culture(
+        encounter_id=enc_id,
+        organism_code=ORGANISMS["p_aeruginosa"]["code"],
+        organism_display=ORGANISMS["p_aeruginosa"]["display"],
+        collected_datetime="2025-01-03T18:43:00.000Z"
+    )
+
+    # Blood culture on Day 6 (January 7, 2025) - Carbapenem resistant P. aeruginosa
+    # This should be EXCLUDED from HOB because it's the same species as prior COB
+    gen.add_blood_culture(
+        encounter_id=enc_id,
+        organism_code=ORGANISMS["p_aeruginosa_cr"]["code"],
+        organism_display=ORGANISMS["p_aeruginosa_cr"]["display"],
+        collected_datetime="2025-01-07T18:43:00.000Z"
+    )
+
+    return gen
+
+
+# =============================================================================
 # Main Execution
 # =============================================================================
 
@@ -869,6 +1007,15 @@ def main():
         series="HOBMeasurable",
         title="NoRiskFactors",
         description="Measurable HOB: S. aureus bacteremia in patient with diabetes/HTN (no non-preventability)",
+        expected_populations={"initialPopulation": 1}
+    )
+
+    # Test Case 11: HOB Excluded - Same Species, Different SNOMED Codes
+    exporter.add_test_case(
+        generator_func=create_hob_excluded_same_species_different_codes,
+        series="HOBExcluded",
+        title="SameSpeciesDiffCodes",
+        description="HOB excluded: P. aeruginosa (day 2) and CR P. aeruginosa (day 6) - same species, different codes",
         expected_populations={"initialPopulation": 1}
     )
 

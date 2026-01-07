@@ -14,10 +14,11 @@ This document specifies all test cases for the HOB (Hospital-Onset Bacteremia & 
 
 | Metric | Description | Positive Test | Negative Test |
 |--------|-------------|---------------|---------------|
-| HOB Event | Pathogenic bacteria/fungi on day 4+ | 1, 2, 4, 9, 10 | 3 |
+| HOB Event | Pathogenic bacteria/fungi on day 4+ | 1, 2, 4, 9, 10 | 3, 11 |
 | Blood Culture Contamination | 1 of 2 sets positive for skin commensal | 5 | 6 |
 | Matching Commensal HOB | Skin commensal + ≥4 days antibiotics | 7 | 8 |
 | Non-Measure HOB | HOB in patient with non-preventability conditions | 9 | 10 |
+| Species Code Matching | Same species with different SNOMED codes (base vs. phenotype) | - | 11 |
 
 ---
 
@@ -267,6 +268,37 @@ This document specifies all test cases for the HOB (Hospital-Onset Bacteremia & 
 
 ---
 
+## Test Case 11: HOB Excluded - Different SNOMED Codes, Same Species
+
+**File**: `HOBExcludedSameSpeciesDifferentCodes.json`
+
+**Scenario**: Patient with differing SNOMED codes of the same species on day 2 and day 6
+
+**Purpose**: Validates HOB code matching correctly identifies same species across different SNOMED codes (base organism vs. resistance phenotype)
+
+| Resource | Details |
+|----------|---------|
+| Patient | Male, DOB 1972-11-30 |
+| Encounter | Admit 2025-01-02T08:00 (Day 1), Discharge 2025-01-10T12:00 (8 days) |
+| Location 1 | HSLOC 1108-0 (Emergency Department), 08:00-12:00 |
+| Location 2 | HSLOC 1162-7 (24 Hour Observation Area), 12:05-20:00 |
+| Location 3 | HSLOC 1060-3 (Medical Ward), 20:05 onwards |
+| Location 4 | Room 123 (physicalType: Room) |
+| Location 5 | Room 1 / Bed 2 (physicalType: Bed) |
+| Specimen 1 | Blood, collected 2025-01-03T18:43 (Day 2) |
+| Specimen 2 | Blood, collected 2025-01-07T18:43 (Day 6) |
+| Observation 1 | Pseudomonas aeruginosa (52499004), Positive |
+| Observation 2 | Carbapenem resistant Pseudomonas aeruginosa (726492000), Positive |
+
+**Expected Outcome**:
+- Initial Population: 1
+- HOB Event: **Negative** (matching pathogenic organisms on day 2 and 6 - same species despite different codes)
+- Community-Onset Bacteremia & Fungemia Event: **Positive** (day 2 culture)
+
+**Key Insight**: The CQL measure must recognize that SNOMED 52499004 (Pseudomonas aeruginosa) and 726492000 (Carbapenem resistant Pseudomonas aeruginosa) represent the same bacterial species. The resistance phenotype does not change organism identity for COB exclusion purposes.
+
+---
+
 ## FHIR Resources by Test Case
 
 | Test Case | Patient | Encounter | Location | Specimen | Observation | Condition | MedicationAdmin |
@@ -281,6 +313,7 @@ This document specifies all test cases for the HOB (Hospital-Onset Bacteremia & 
 | 8 | ✓ | ✓ | ✓ | 2 | 2 | - | 1 |
 | 9 | ✓ | ✓ | ✓ | 1 | 1 | 2 | - |
 | 10 | ✓ | ✓ | ✓ | 1 | 1 | 2 | - |
+| 11 | ✓ | ✓ | ✓ | 2 | 2 | - | - |
 
 ---
 
@@ -293,6 +326,8 @@ This document specifies all test cases for the HOB (Hospital-Onset Bacteremia & 
 | Staphylococcus aureus | 3092008 | Staphylococcus aureus |
 | Escherichia coli | 112283007 | Escherichia coli |
 | Candida albicans | 53326005 | Candida albicans |
+| Pseudomonas aeruginosa | 52499004 | Pseudomonas aeruginosa |
+| Carbapenem resistant Pseudomonas aeruginosa | 726492000 | Carbapenem resistant Pseudomonas aeruginosa |
 
 ### Skin Commensals (Standard HOB Excluded)
 
