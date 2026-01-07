@@ -324,7 +324,7 @@ The Day 6 culture timing qualifies for HOB (day 4+), but it must be excluded bec
 | 8 | ✓ | ✓ | ✓ | 2 | 2 | - | 1 |
 | 9 | ✓ | ✓ | ✓ | 1 | 1 | 2 | - |
 | 10 | ✓ | ✓ | ✓ | 1 | 1 | 2 | - |
-| 11 | ✓ | ✓ | ✓ | 2 | 2 | - | - |
+| 11 | ✓ | ✓ | 3 | 2 | 2 | - | - |
 
 ---
 
